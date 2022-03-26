@@ -74,17 +74,11 @@ resource "aws_amplify_app" "frontend" {
 
   iam_service_role_arn = aws_iam_role.amplify_role.arn
 
-  #Comment this on the first run, trigger a build of your branch, This will added automatically on the console after deployment. Add it here to ensure your subsequent terraform runs don't break your amplify deployment.
-  custom_rule {
-    source = "/<*>"
-    status = "200"
-    target = "https://<*>.cloudfront.net/<*>" 
-  }
-
-  custom_rule {
-    source = "/<*>"
-    status = "404-200"
-    target = "/index.html"  
+  #Amplify will automatically add custom_rules after initial deployment. This ensures your subsequent terraform runs don't break your amplify deployment.
+  lifecycle {
+    ignore_changes = [
+      custom_rule,
+    ]
   }
 
   tags = {
